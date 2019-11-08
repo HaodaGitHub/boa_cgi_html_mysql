@@ -1,6 +1,6 @@
 效果参考：
 
-    https://ikaros-521.gitee.io/boa_cgi_html_mysql/login.html
+https://ikaros-521.gitee.io/boa_cgi_html_mysql/login.html
 
 使用到的软件和技术
 
