@@ -1,3 +1,7 @@
+效果参考：
+
+    https://ikaros-521.gitee.io/boa_cgi_html_mysql/login.html
+
 使用到的软件和技术
 
 	BOA服务器，Apache，CGI，CCGI，MySQL，SQLite。C，HTML，CSS，JS，SQL
