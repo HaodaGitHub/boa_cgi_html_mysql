@@ -20,25 +20,42 @@ https://ikaros-521.gitee.io/boa_cgi_html_mysql/login.html
 
 
 ## 准备环境
+
 操作系统： Ubuntu12.04 LTS
+
 环境搭建： 需要 [BOA](http://www.boa.org/)，Apache，CCGI，MySQL，GCC
+
 [Linux下嵌入式Web服务器BOA和CGI编程开发](https://blog.csdn.net/Ikaros_521/article/details/102610768)
+
 [数据库的相关知识——学习笔记](https://blog.csdn.net/Ikaros_521/article/details/102610768) 的三
+
 [mysql中文乱码问题解决 / C程序插入仍是乱码解决 / 卸载重装教学](https://blog.csdn.net/Ikaros_521/article/details/102664117)
+
 扩展： 我还用了[bootstrap](https://www.runoob.com/bootstrap/bootstrap-tutorial.html)框架，CSS/JS
+
 源码链接：GitHub：[传送门](https://github.com/Ikaros-521/boa_cgi_html_mysql)  ， 码云：[传送门](https://gitee.com/ikaros-521/boa_cgi_html_mysql)
+
 ## 使用方法
+
 环境准备好后，我们在 /var/www 下写HTML文件
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029161455842.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 在 /var/www/cgi-bin 下写c文件，编译后命名为.cgi。
+
 编译命令仅供参考
+
  `gcc -o login.cgi login.c cgic.c -lpthread -ldl -lmysqlclient`
+ 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029161513208.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 程序都写好后，我们开始测试。
 
 
 **1、开启MySQL服务    默认开启**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029161420461.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 我的程序需要事先   新建用户test，数据库register，表user
 
 ```bash
@@ -64,33 +81,58 @@ mysql> CREATE TABLE user(username varchar(20) PRIMARY KEY,password varchar(20));
 ```
 
 **2、开启BOA服务器，在/boa/src目录下**    `sudo ./boa`
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2019102916165782.png)
-**3、打开浏览器，访问localhost:端口号 访问的即 /var/www 目录
-我直接访问 http://localhost:886/login.html  我的登录页面**
+
+**3、打开浏览器，访问localhost:端口号 访问的即 /var/www 目录**
+
+**我直接访问 http://localhost:886/login.html  我的登录页面**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029161753741.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+   
    其他页面都是同理。
 
 ## 思路讲解
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029165019995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **开启boa服务器后，我们访问到我们在 /var/www 下编写的HTML文件，显示我们的登录页面。
 我们点击“注册”按钮，跳转到 register.html**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029162441412.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **点击“注册”按钮，提交form表单信息给cgi-bin/register.cgi**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029162553274.png)
+
 **cgi程序通过 cgiFormString函数试图检索发送给指定字段的字符串。存入变量中。我们连接MySQL数据库**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029162908685.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029163139201.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **将数据写入register数据库中的user表中（此数据库和表需要先建好）**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029163104479.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **处理完毕后，跳回 login.html 登录页面**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029163244907.png)
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029163352485.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **现在我们输入数据，点击“登录”，同理将表单发给 login.cgi ，对数据在MySQL数据库中查询后，成功就来到base_config.html 配置页面。**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029164311961.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **然后我们输入相应数据，点击“提交”，交给base_config.cgi处理，之后任意发挥就好了。**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029164437115.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 **我是打印出来，写入系统文件的代码暂时注释了，慎用**
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20191029164447236.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0lrYXJvc181MjE=,size_16,color_FFFFFF,t_70)
+
 *遇到问题可以参考页首的链接*
 
 ---
